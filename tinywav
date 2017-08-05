@@ -1,0 +1,34 @@
+#!/bin/bash
+
+TMPFILE="/tmp/tinywav.c"
+
+duration=691200000 # ^C to exit, or -l duration to redefine
+
+while true ; do
+	case "$1" in
+		-l)
+			shift; duration=$1; shift
+			;;
+		-h|--help)
+			echo "Usage: tinywav [-l length=5] cexpr"
+			echo "Write a C expression (variable 't' is time, D(x,y) is safe division),"
+			echo "get audio from /dev/dsp."
+			exit 1
+			;;
+		*) break ;;
+	esac
+done
+
+echo writing...
+echo '#include <math.h>' > /tmp/tinywav.c
+echo '#define TAU (8*atan(1))' >> /tmp/tinywav.c
+echo 'static int D(int x,int y){return(y==0)?y:(x/y);}' >> /tmp/tinywav.c
+echo 'int main(int t){for(t=0;;t++)putchar(' >> /tmp/tinywav.c
+echo "  $@" >> /tmp/tinywav.c
+echo '); return 0;}' >> /tmp/tinywav.c
+echo compiling...
+gcc -Wall -Wextra -Wno-main -Wno-implicit-function-declaration \
+	-Wno-unused-function /tmp/tinywav.c -lm -o /tmp/tinywav
+echo running...
+/tmp/tinywav | head -c $(( 8000*$duration )) > /dev/dsp2
+

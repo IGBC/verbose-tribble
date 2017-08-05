@@ -13,9 +13,18 @@ double note(int base, int scale, int i);
 
 /* converts timestep to seconds (flooring the fractional result) */
 int seconds(int t);
+
 /* cycles through the provided list of integer items at the rate of 
  * the given beat (bps) */ 
 int sequencer(long t, double beat, int *item_array, int len);
+
+/* Standard Envelope Generator (ADSR)
+ * takes the current time and a trigger time in samples as well as
+ * A,D,H,R parameters in seconds and S parameter as a normalised
+ * float. Returns a normalised float for using as a gain or 
+ * whatever */
+//double ADSR(long t, long trig_t, double A, double D, double H, double S, double R)
+double ADSR(long t, long trig_t, double, double, double, double, double); 
 
 /* Sample Writing (Output) functions */
 

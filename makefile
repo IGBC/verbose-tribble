@@ -1,19 +1,21 @@
 CC ?= clang
-CFLAGS ?= -Wall -Wpedantic
+CFLAGS ?= -Wall -Wpedantic -O2
 LDFLAGS ?= -lm
 
-all: clean main.x86_64
+all: clean bin/main.x86_64
 
 .PHONY: clean
 clean: 
+	echo cleaning
 	rm -rfv ./bin/
 	rm -f main.x86_64
 
 .PHONY: noise
-noise: main.x86_64
-	./main.x86_64 | aplay --rate=44100 --format=S32_LE
+noise: bin/main.x86_64
+	./bin/main.x86_64 | aplay --rate=44100 --format=S32_LE
 
-main.x86_64: bin/A440.o bin/musical_utils.o bin/main.o
+bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/main.o
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 bin/%.o: src/%.c
 	mkdir -p bin

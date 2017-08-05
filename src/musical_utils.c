@@ -4,6 +4,12 @@
 #include <limits.h>
 #include <stdio.h>
 
+double lerp(double t, double y0, double y1, double t0, double t1) {
+    double u = t  - t0;
+    double l = t1 - t0;
+    return (y0 * (1-(u/l))) + (y1 * (u/l));
+}
+
 /* Generate frequencies of a musical scale.
  * scale is defined by nth root 2 constant where n = 12 in european music 
  * notes sit at integer powers of the constant, multiplied by a base freqency.
@@ -29,6 +35,18 @@ int sequencer(long t, double beat, int *item_array, int len) {
     return item_array[val];
 }
 
+double ADSR(long t, long trig_t, double A, double D, double H, double S, double R) {
+    if (t - trig_t < A*RATE)
+        return lerp(t, 0, 1, trig_t, trig_t + (A*RATE));
+    if (t - trig_t < (A+D)*RATE)
+        return lerp(t, 1, S, trig_t + (A*RATE), trig_t + ((A+D)*RATE));
+    if (t - trig_t < (A+D+H)*RATE)
+        return S;
+    if (t - trig_t < (A+D+H+R)*RATE)
+        return lerp(t, S, 0, trig_t + ((A+D+H)*RATE), trig_t + ((A+D+H+R)*RATE));
+    return 0;
+}
+
 /* Sample Writing (Output) functions */
 
 /* Both of these write the output to std out in formats designed for alsa */
@@ -39,10 +57,25 @@ void writeU8(double sample) {
 }
 
 /* Output sample in S32LE format */
-void write32(double val) {
+#define BUFSIZE 100000
+void write32_(double val) {
+    static int buf[BUFSIZE];
+    static int pos = 0;
     int sample = val * INT_MAX;
-    for (int i = 0; i < 4; i++, sample >>= 8)
-        putchar(sample & 0xff);
+    buf[pos++] = sample;
+    if (pos>BUFSIZE-1) {
+        fwrite(buf, sizeof(int), BUFSIZE, stdout);
+        pos = 0;
+    }
+    //for (int i = 0; i < 4; i++, sample >>= 8)
+        //putchar(sample & 0xff);
+}
+
+void write32( double val ) {
+    static double v0 = 0, v1 = 0;
+    double mean = (v0+v1+val)/3.0;
+    v0 = v1; v1 = val;
+    write32_( val );
 }
 
 /* Tone Generator Functions */

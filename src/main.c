@@ -34,20 +34,26 @@ int main() {
     
     double a=1,b=1,c=1,d=1,e=1,s=0.2;
     for(long t=0;;t++) {
-        int relapos = (t*beat) % RATE;
+        int relapos = (t*beat) % RATE; // relative clock position inside current beat length
+        // clock resets to 0
         if (relapos==0) {
+            // code to look up new beat length
             switch(cycle) {
               case 0: case 2: beat=6; break;
               case 1: beat=5; break;
               case 3: case 4: beat=3; break;
               case 5: beat=1; break;
             }
-            cycle = (cycle+1)%6;
+            cycle = (cycle+1)%6; // loops 
+            
+            // harmonic coeficent generation on new beat
             a = sqrt(((double)rand())/RAND_MAX);
             b = sqrt(((double)rand())/RAND_MAX);
             c = sqrt(((double)rand())/RAND_MAX);
             d = sqrt(((double)rand())/RAND_MAX);
             e = sqrt(((double)rand())/RAND_MAX);
+            
+            // harmonic normalisation. 
             s = 1.0/(a+b+c+d+e);
             a *=s; b *=s; c *= s; d *= s; e *= s;
         }
@@ -57,6 +63,8 @@ int main() {
         //if (beat == beat2)
         //    fprintf(stderr, "%li,  We dont dissagree (politely)!!!\n");
         
+        
+        // make noises
        	double m = a * playsaw(t, sequencer(t, 1, notes, sizeof(notes)/sizeof(int)))*0.05;
        	double n = b * playsaw(t, 3*sequencer(t, 1, notes, sizeof(notes)/sizeof(int)))*0.05;
        	double o = c * playsaw(t, 5*sequencer(t, 1, notes, sizeof(notes)/sizeof(int)))*0.05;

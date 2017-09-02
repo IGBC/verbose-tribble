@@ -72,9 +72,12 @@ void write32_(double val) {
 }
 
 void write32( double val ) {
+    /* Do a windowing mean (reduces popping)*/
+    /*
     static double v0 = 0, v1 = 0;
     double mean = (v0+v1+val)/3.0;
     v0 = v1; v1 = val;
+    */
     write32_( val );
 }
 

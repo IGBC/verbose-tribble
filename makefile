@@ -1,6 +1,6 @@
 CC ?= clang
 CFLAGS ?= -Wall -Wpedantic -O2
-LDFLAGS ?= -lm
+LDFLAGS ?= -lfftw3 -lm 
 
 all: clean bin/main.x86_64
 

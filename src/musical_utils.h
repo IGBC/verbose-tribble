@@ -16,7 +16,7 @@ int seconds(int t);
 
 /* cycles through the provided list of integer items at the rate of 
  * the given beat (bps) */ 
-int sequencer(long t, double beat, int *item_array, int len);
+double sequencer(long t, double beat, double *item_array, int len);
 
 /* Standard Envelope Generator (ADSR)
  * takes the current time and a trigger time in samples as well as

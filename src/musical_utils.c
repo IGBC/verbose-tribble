@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <stdio.h>
 
+#define lenof(x) sizeof(x)/sizeof(((x)[0]))
+
 double lerp(double t, double y0, double y1, double t0, double t1) {
     double u = t  - t0;
     double l = t1 - t0;
@@ -30,8 +32,15 @@ int seconds(int t) {
 
 /* cycles through the provided list of integer items at the rate of 
  * the given beat (bps) */ 
-int sequencer(long t, double beat, int *item_array, int len) {
+double sequencer(long t, double beat, double *item_array, int len) {
     int val =  (int)((t*beat) / RATE) % len;
+    return item_array[val];
+}
+
+/* cycles through the provided list of integer items at the rate of 
+ * the given beat (bps) */ 
+double sequencer_b(long t, double beat, double *item_array, int *counts) {
+    int val = (int)((t*beat) / RATE) % lenof(item_array);
     return item_array[val];
 }
 

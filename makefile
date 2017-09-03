@@ -10,11 +10,14 @@ clean:
 	rm -rfv ./bin/
 	rm -f main.x86_64
 
-.PHONY: noise
+.PHONY: noise silent
 noise: bin/main.x86_64
 	./bin/main.x86_64 | aplay --rate=44100 --format=S32_LE
 
-bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/main.o
+silent: bin/main.x86_64
+	./bin/main.x86_64 > /dev/null
+
+bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/gen.o
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 bin/%.o: src/%.c

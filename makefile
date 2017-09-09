@@ -1,5 +1,5 @@
 CC ?= clang
-CFLAGS ?= -Wall -Wpedantic -O2
+CFLAGS ?= -Wall -Wpedantic -O2 -frtti
 LDFLAGS ?= -lfftw3 -lm 
 
 all: clean bin/main.x86_64
@@ -17,9 +17,13 @@ noise: bin/main.x86_64
 silent: bin/main.x86_64
 	./bin/main.x86_64 > /dev/null
 
-bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/gen.o
-	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/audiosink.o bin/main.o bin/streaming_interface.o bin/blocks/ossilator.o
+	g++ $^ $(CFLAGS) $(LOADLIBES) $(LDLIBS) -o $@
 
 bin/%.o: src/%.c
-	mkdir -p bin
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	mkdir -p $(dir $@)
+	gcc -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+bin/%.o: src/%.cpp
+	mkdir -p $(dir $@)
+	g++ -c $(CFLAGS) $(CPPFLAGS) $< -o $@

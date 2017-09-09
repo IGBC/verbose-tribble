@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 #define TAU (double)(8*atan(1)) // Definition of 2PI used in sin functions
 #define RATE 44100 // sample rate of output 
 
@@ -42,3 +45,6 @@ void write32(double val); /* Output sample in S32LE format */
 double playsqr(long t, int freq); // Square Wave
 double playsaw(long t, int freq); // Sawtooth Wave
 double playsin(long t, int freq); // Sine Wave
+#ifdef __cplusplus
+}
+#endif

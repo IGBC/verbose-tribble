@@ -1,3 +1,5 @@
+#ifndef MUSICAL_UTILS_H
+#define MUSICAL_UTILS_H
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,4 +49,5 @@ double playsaw(long t, int freq); // Sawtooth Wave
 double playsin(long t, int freq); // Sine Wave
 #ifdef __cplusplus
 }
+#endif
 #endif

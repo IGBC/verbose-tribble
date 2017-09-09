@@ -9,10 +9,11 @@ streaming_interface::~streaming_interface(){
 }
 
 workUnit streaming_interface::getNextWorkUnit(){
-	compute_workunit(current_t);
+	workUnit w = compute_workunit(current_t);
 	current_t += WORKUNIT;
+	return w;
 }
 
 workUnit streaming_interface::getWorkUnit(timestamp t){
-	compute_workunit(t);
+	return compute_workunit(t);
 }

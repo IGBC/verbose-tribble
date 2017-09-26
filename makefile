@@ -2,7 +2,7 @@ CC ?= clang
 CFLAGS ?= -Wall -Wpedantic -O2 -frtti
 LDFLAGS ?= -lfftw3 -lm 
 
-all: clean bin/main.x86_64
+all: clean bin/gen.x86_64
 
 .PHONY: clean
 clean: 
@@ -11,19 +11,15 @@ clean:
 	rm -f main.x86_64
 
 .PHONY: noise silent
-noise: bin/main.x86_64
+noise: bin/gen.x86_64
 	./bin/main.x86_64 | aplay --rate=44100 --format=S32_LE
 
-silent: bin/main.x86_64
+silent: bin/gen.x86_64
 	./bin/main.x86_64 > /dev/null
 
-bin/main.x86_64: bin/A440.o bin/musical_utils.o bin/audiosink.o bin/main.o bin/streaming_interface.o bin/blocks/ossilator.o
+bin/%.x86_64: bin/A440.o bin/musical_utils.o bin/%.o
 	g++ $^ $(CFLAGS) $(LOADLIBES) $(LDLIBS) -o $@
 
 bin/%.o: src/%.c
 	mkdir -p $(dir $@)
 	gcc -c $(CFLAGS) $(CPPFLAGS) $< -o $@
-
-bin/%.o: src/%.cpp
-	mkdir -p $(dir $@)
-	g++ -c $(CFLAGS) $(CPPFLAGS) $< -o $@
